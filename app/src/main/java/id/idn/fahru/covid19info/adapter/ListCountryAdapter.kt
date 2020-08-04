@@ -1,5 +1,6 @@
 package id.idn.fahru.covid19info.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
@@ -22,6 +23,7 @@ class ListCountryAdapter : RecyclerView.Adapter<ListCountryVH>(), Filterable {
         dataCountry.clear()
         // tambahkan data set baru menggunakan addAll
         dataCountry.addAll(listCountry)
+        dataFiltered.addAll(listCountry)
         // beritahu RecyclerView Adapter karena ada perubahan Data Set
         notifyDataSetChanged()
     }
@@ -34,27 +36,42 @@ class ListCountryAdapter : RecyclerView.Adapter<ListCountryVH>(), Filterable {
 
     override fun getItemCount(): Int {
         // ukuran dari dataCountry
-        return dataCountry.size
+        return dataFiltered.size
+    }
+
+    // buat fungsi cek angka genap
+    private fun isEven(number: Int): Boolean {
+        // jika angka yang diinputkan dibagi 2 bersisa 0 atau tidak ada sisa,
+        // maka hasilnya true / genap
+        // semisal angka 0 dibagi 2, maka hasilnya 0 sisanya 0 dan dianggap genap
+        // semisal angka 1 dibagi 2, maka hasilnya 0 sisanya 1 dan dianggap ganjil
+        // semisal angka 5 dibagi 2, maka hasilnya 2 sisanya 1 dan dianggap ganjil
+        // semisal angka 6 dibagi 2, maka hasilnya 3 sisanya 0 dan dianggap genap
+        return number % 2 == 0
     }
 
     override fun onBindViewHolder(holder: ListCountryVH, position: Int) {
         // memilih data sesuai posisi item recyclerview
-        val data = dataCountry[position]
+        val data = dataFiltered[position]
+
         // data tersebut ditempelkan ke dalam view menggunakan holder / ViewHolder
-        holder.bind(data)
+        // tambahkan isEven berisi position untuk mengetahui posisinya genap atau ganjil
+        holder.bind(data, isEven(position))
     }
 
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults? {
                 val filterResult = FilterResults()
+                Log.e("constraint", constraint.toString())
+                // hapus dulu isi dataFiltered
+                dataFiltered.clear()
                 // mengisi dataFiltered dengan semua data yang ada di dataCountry jika tidak ada keyword
                 if (constraint.isNullOrEmpty()) {
+                    dataFiltered.clear()
                     // jadikan dataCountry sebagai isi dari dataFiltered
-                    filterResult.values = dataCountry
+                    dataFiltered.addAll(dataCountry)
                 } else {  // Jika ada keyword, maka lakukan perulangan untuk menyaring data berdasarkan keyword
-                    // pertama buat variabel list kosong sementara
-                    val resultFilter = mutableListOf<CountriesItem>()
                     // lakukan perulangan data pada dataCountry untuk mencari data berisi keyword
                     dataCountry.forEach { data ->
                         val countryName = data.country
@@ -63,30 +80,19 @@ class ListCountryAdapter : RecyclerView.Adapter<ListCountryVH>(), Filterable {
                             // jika nama negara berisi keyword (setel true agar huruf kecil besar tidak berpengaruh)
                             if (country.contains(constraint, true)) {
                                 // tambahkan data ke dalam resultFilter
-                                resultFilter.add(data)
+                                dataFiltered.add(data)
                             }
                         }
                     }
-                    // jadikan resultFilter sebagai isi dari dataFiltered
-                    filterResult.values = resultFilter
                 }
+                // jadikan resultFilter sebagai isi dari dataFiltered
+                filterResult.values = dataFiltered
                 return filterResult
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                results?.let { data ->          // jika variabel results tidak null, maka buat variabel baru "data" berisi results
-                    if (data is List<*>) { // jika data tersebut berbentuk list
-                        dataFiltered.clear() // hapus dataFiltered yang ada saat ini
-                        data.forEach { country ->   // lakukan perulangan, tiap item list data jadi variabel country
-                            country?.let {      // Jika country tidak null
-                                // maka tambahkan data tersebut ke dalam data Filtered
-                                if (country is CountriesItem) dataFiltered.add(it as CountriesItem)
-                            }
-                        }
-                        // beritahu adapter recyclerview jika data set telah berubah
-                        notifyDataSetChanged()
-                    }
-                }
+                // beritahu adapter recyclerview jika data set telah berubah
+                notifyDataSetChanged()
             }
         }
     }
