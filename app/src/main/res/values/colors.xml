@@ -11,4 +11,5 @@
     <color name="tosca">#00BFA5</color>
     <color name="light_tosca">#1DE986</color>
     <color name="white">@android:color/white</color>
+    <color name="dkgrey">@android:color/darker_gray</color>
 </resources>

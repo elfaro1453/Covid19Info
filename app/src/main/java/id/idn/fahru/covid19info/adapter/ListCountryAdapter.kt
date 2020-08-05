@@ -1,11 +1,13 @@
 package id.idn.fahru.covid19info.adapter
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
+import id.idn.fahru.covid19info.ChartCountryActivity
 import id.idn.fahru.covid19info.databinding.ListCountryBinding
 import id.idn.fahru.covid19info.pojo.CountriesItem
 
@@ -53,10 +55,18 @@ class ListCountryAdapter : RecyclerView.Adapter<ListCountryVH>(), Filterable {
     override fun onBindViewHolder(holder: ListCountryVH, position: Int) {
         // memilih data sesuai posisi item recyclerview
         val data = dataFiltered[position]
-
         // data tersebut ditempelkan ke dalam view menggunakan holder / ViewHolder
         // tambahkan isEven berisi position untuk mengetahui posisinya genap atau ganjil
         holder.bind(data, isEven(position))
+
+        holder.itemView.setOnClickListener { view ->
+            // buat intent berisi context dan tujuan
+            val intent = Intent(view.context, ChartCountryActivity::class.java)
+            // tambahkan extra parcelable data yang ada di posisi tersebut
+            intent.putExtra("DATA_COUNTRY", data)
+            // startActivity seperti ini
+            view.context.startActivity(intent)
+        }
     }
 
     override fun getFilter(): Filter {
@@ -68,7 +78,7 @@ class ListCountryAdapter : RecyclerView.Adapter<ListCountryVH>(), Filterable {
                 dataFiltered.clear()
                 // mengisi dataFiltered dengan semua data yang ada di dataCountry jika tidak ada keyword
                 if (constraint.isNullOrEmpty()) {
-                    dataFiltered.clear()
+                    // dataFiltered.clear()
                     // jadikan dataCountry sebagai isi dari dataFiltered
                     dataFiltered.addAll(dataCountry)
                 } else {  // Jika ada keyword, maka lakukan perulangan untuk menyaring data berdasarkan keyword

@@ -18,7 +18,9 @@ class ListCountryVH(private val binding: ListCountryBinding) :
 
         binding.run {
             // ubah background ke warna putih
-            if (isWhite) layGlobeHeader.setBackgroundResource(R.color.white)
+            if (isWhite) layGlobeHeader.setBackgroundResource(R.color.white) else layGlobeHeader.setBackgroundResource(
+                R.color.dkgrey
+            )
 
             // masukkan data ke pada tempatnya
             txtCountryName.text = data.country
