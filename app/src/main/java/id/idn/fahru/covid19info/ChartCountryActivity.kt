@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -138,6 +139,10 @@ class ChartCountryActivity : AppCompatActivity() {
                 barDataDeath.setColors(Color.parseColor("#03DAC5"))
                 barDataActive.setColors(Color.parseColor("#2196F3"))
 
+                // membuat variabel data berisi semua barData
+                val dataChart =
+                    BarData(barDataConfirmed, barDataRecovered, barDataDeath, barDataActive)
+
                 // buat variabel berisi spasi
                 val barSpace = 0.02f
                 val groupSpace = 0.3f
@@ -145,8 +150,12 @@ class ChartCountryActivity : AppCompatActivity() {
 
                 // modifikasi chartView programmatically
                 binding.chartView.run {
+                    // Tambahkan dataChart kedalam ChartView
+                    data = dataChart
+                    // invalidate untuk mengganti data sebelumnya (jika ada) dengan data yang baru
                     invalidate()
                     setNoDataTextColor(R.color.dkgrey)
+                    // ChartView bisa ditap atau di-zoom
                     setTouchEnabled(true)
                     description.isEnabled = false
                     xAxis.axisMinimum = 0f
