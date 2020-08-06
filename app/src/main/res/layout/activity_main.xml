@@ -41,18 +41,6 @@
             app:queryBackground="@null"
             app:queryHint="Cari Negara" />
 
-        <Button
-            android:id="@+id/btn_sequence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp2"
-            android:layout_marginTop="@dimen/dp8"
-            android:layout_marginEnd="@dimen/dp2"
-            android:layout_marginBottom="@dimen/dp8"
-            android:layout_weight="5"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            app:icon="@drawable/ic_search"
-            android:text=""/>
     </LinearLayout>
 
     <LinearLayout
@@ -219,7 +207,7 @@
             android:id="@+id/rv_country"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/list_country"/>
+            tools:listitem="@layout/list_country" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
